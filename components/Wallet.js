@@ -28,17 +28,17 @@ import { ArrowBigLeft, ArrowDownLeftFromSquare, ArrowLeft, ArrowLeftFromLineIcon
 import { PiWalletLight, PiWalletThin } from "react-icons/pi";
   
 function WalletComponent() {
-    const { address } = useAccount();
+    const { address, isConnected } = useAccount();
 
     return (
-        <Card>
-            <Wallet className="p-0 text-sm">
+        <Card className={`${!isConnected ? 'bg-primary border-none rounded-md' : ''}`}>
+            <Wallet className={`p-0 text-sm ${!isConnected ? 'flex justify-center' : ''}`}>
                 <ConnectWallet className="flex p-2 items-center justify-center" text="Connect Wallet">
                     <PiWalletLight className='self-center text-xl' />
                     <Name />
                 </ConnectWallet>
                 <WalletDropdown>
-                    <div className='flex items-center justify-between py-1 pl-2 pr-1 rounded-sm gap-2 bg-[#AF5050]'>
+                    <div className='flex items-center justify-between py-1 pl-2 pr-1 rounded-sm gap-2 bg-secondary'>
                         <LogOut />
                         <WalletDropdownDisconnect className="p-0" />
                     </div>

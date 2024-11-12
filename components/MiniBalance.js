@@ -28,7 +28,7 @@ export default function MiniBalance() {
     }, [result]);
 
     return (
-        <div className='flex items-center justify-center space-x-1 bg-[#AF5050] py-2 pl-2 pr-3 rounded-xl text-sm'>
+        <div className='flex items-center justify-center space-x-1 bg-primary py-2 pl-2 pr-3 rounded-xl text-sm'>
             <RiCopperCoinLine size={20} />
             <h1 className='font-bold'>{balance} BBL</h1>
         </div>
