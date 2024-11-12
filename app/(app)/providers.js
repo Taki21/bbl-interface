@@ -1,39 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { darkTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { cookieStorage, createConfig, createStorage, http, WagmiProvider } from 'wagmi';
 import {
-  arbitrum,
   base,
-  mainnet,
-  optimism,
-  polygon,
-  sepolia,
+  baseSepolia
 } from 'wagmi/chains';
+import { coinbaseWallet } from 'wagmi/connectors';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { getConfig } from './wagmi';
 
-export const config = getDefaultConfig({
-    appName: 'RainbowKit demo',
-    projectId: '1d684c4961d660f63af10f478e8ae585',
-    chains: [
-        mainnet,
-        polygon,
-        optimism,
-        arbitrum,
-        base,
-    ],
-    ssr: true,
-});
-
-const queryClient = new QueryClient();
-
-export function Providers({ children }) {
+export function Providers(props) {
+  const [config] = useState(() => getConfig());
+  const [queryClient] = useState(() => new QueryClient());
+ 
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={config} initialState={props.initialState}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
+        <OnchainKitProvider
+          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          chain={baseSepolia} // add baseSepolia for testing
+        >
+          {props.children}
+        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

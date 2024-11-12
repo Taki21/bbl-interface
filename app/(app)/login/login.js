@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import WalletButton from '@/components/Wallet';
 
 export default function LoginPage() {
   const { isConnected } = useAccount();
@@ -18,7 +18,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="mb-6 text-3xl font-bold">Login</h1>
-      <ConnectButton />
+      <WalletButton />
     </div>
   );
 }

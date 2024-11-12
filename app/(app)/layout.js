@@ -1,13 +1,20 @@
 "use client";
 
-import '@rainbow-me/rainbowkit/styles.css';
 import { Providers } from './providers';
+import { ThemeProvider } from '@/components/theme-provider';
 
 function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
