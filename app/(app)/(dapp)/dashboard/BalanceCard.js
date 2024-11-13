@@ -73,7 +73,7 @@ export default function BalanceCard() {
                         </Dialog>
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button className="bg-secondary text-white px-3 py-1 rounded-md">
+                                <Button className="bg-primary text-white px-3 py-1 rounded-md">
                                     Receive
                                 </Button>
                             </DialogTrigger>
