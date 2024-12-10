@@ -1,29 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cookieStorage, createConfig, createStorage, http, WagmiProvider } from 'wagmi';
-import {
-  base,
-  baseSepolia
-} from 'wagmi/chains';
-import { coinbaseWallet } from 'wagmi/connectors';
-import { OnchainKitProvider } from '@coinbase/onchainkit';
-import { getConfig } from './wagmi';
+import { WagmiProvider, createConfig, http, useAccount, useConnect, useDisconnect } from "wagmi";
+import { coinbaseWallet, walletConnect } from "wagmi/connectors";
+import { sepolia, mainnet, polygon } from "wagmi/chains";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query' 
+
+import Web3AuthConnectorInstance from "./Web3AuthConnectorInstance";
+
+const queryClient = new QueryClient() 
+
+// Set up client
+const config = createConfig({
+  chains: [mainnet, sepolia, polygon],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+    [polygon.id]: http(),
+  },
+  connectors: [
+    Web3AuthConnectorInstance([mainnet, sepolia, polygon]),
+  ],
+});
 
 export function Providers(props) {
-  const [config] = useState(() => getConfig());
-  const [queryClient] = useState(() => new QueryClient());
- 
+  //const { locale } = useRouter();
+
   return (
     <WagmiProvider config={config} initialState={props.initialState}>
       <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider
-          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-          chain={baseSepolia} // add baseSepolia for testing
-        >
           {props.children}
-        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
