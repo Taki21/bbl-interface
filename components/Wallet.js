@@ -87,7 +87,7 @@ export default function WalletButton() {
                     <DropdownMenuItem>New Team</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={disconnect}>
+                <DropdownMenuItem onClick={() => disconnect()}>
                     Log out
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
