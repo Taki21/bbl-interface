@@ -7,7 +7,16 @@ import { Chain } from "wagmi/chains";
 import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin";
 import { AuthAdapter } from "@web3auth/auth-adapter";
 
-export default function Web3AuthConnectorInstance(chains) {
+export function Web3AuthConnectorInstance(web3AuthInstance, provider) {
+  return new Web3AuthConnector({
+    web3AuthInstance,
+    loginParams: {
+      loginProvider: provider,
+    },
+  });
+}
+
+export function Web3AuthInstance(chains) {
   // Create Web3Auth Instance
   const name = "BBL";
   const chainConfig = {
@@ -23,7 +32,7 @@ export default function Web3AuthConnectorInstance(chains) {
   const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
 
   const web3AuthInstance = new Web3AuthNoModal({
-    clientId: "BCj1XhwdnKxnANNGgiE3Lyan8JeNRGGZTg8tIfLKyZ5wkCD4EPtTRkSM-OwEhyO8QmO1ok4n-VPzRNwDvO3YkQQ",
+    clientId: "BEbV53dD1PMIzVp6jM2m4FfbuPN1HhcAMe4Sgh5ioZ63fBp27zy10eL5wsgyblniJ9p0pgI4r9PRCKszix14u5U",
     chainConfig,
     privateKeyProvider,
     uiConfig: {
@@ -48,16 +57,11 @@ export default function Web3AuthConnectorInstance(chains) {
   const walletServicesPlugin = new WalletServicesPlugin({
     walletInitOptions: {
       whiteLabel: {
-        showWidgetButton: true,
+        showWidgetButton: false,
       }
     }
   });
   web3AuthInstance.addPlugin(walletServicesPlugin);
 
-  return Web3AuthConnector({
-      web3AuthInstance,
-      loginParams: {
-        loginProvider: "google",
-      },
-  });
+  return web3AuthInstance;
 }

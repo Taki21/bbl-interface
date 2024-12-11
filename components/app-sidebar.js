@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useEffect, useState } from "react"
 import {
   BookOpen,
   Bot,
@@ -28,23 +29,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useWeb3Auth } from "@/context/Web3AuthContext"
+import { useWalletClient } from "wagmi"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: SquareTerminal,
       isActive: true,
     },
     {
       title: "Tasks",
-      url: "#",
+      url: "/tasks",
       icon: Bot,
     },
     {
@@ -90,6 +88,35 @@ const data = {
 }
 
 export function AppSidebar({ ...props }) {
+
+  const { data: walletClient } = useWalletClient();
+  let web3Auth = useWeb3Auth();
+
+  const [user, setUser] = useState({
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  });
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        var userInfo = await web3Auth?.getUserInfo();
+      } catch (e) {
+        console.log("Cannot get userInfo first time, likely web3Auth not fully updated");
+      }
+      console.log("/app, userInfo", userInfo);
+      if (userInfo) {
+        setUser({
+          name: userInfo.name,
+          email: userInfo.email,
+          avatar: userInfo.profileImage,
+        });
+      }
+    };
+    getUserInfo();
+  }, [walletClient]);
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -115,7 +142,7 @@ export function AppSidebar({ ...props }) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

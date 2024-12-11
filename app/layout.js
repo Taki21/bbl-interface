@@ -1,6 +1,7 @@
 import "./globals.css";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata = {
   title: "Create Next App",
@@ -9,9 +10,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
+    <html suppressHydrationWarning lang="en" className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
       <body className="font-sans">
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,57 +1,97 @@
-"use client";
-
 import {
-    Address,
-    EthBalance,
-    Identity,
-    Name,
-    Socials,
-} from '@coinbase/onchainkit/identity';
-import { color } from '@coinbase/onchainkit/theme';
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
-    ConnectWallet,
-    Wallet,
-    WalletDropdown,
-    WalletDropdownBasename,
-    WalletDropdownDisconnect,
-    WalletDropdownFundLink,
-    WalletDropdownLink,
-} from '@coinbase/onchainkit/wallet';
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuItem, DropdownTrigger } from '@/components/ui/dropdown-menu';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useEffect, useState } from "react"
+import { useWeb3Auth } from "@/context/Web3AuthContext"
+import { useDisconnect, useWalletClient } from "wagmi"
+import { data } from "autoprefixer"
 
-import { useAccount } from 'wagmi';
-import { Avatar, AvatarFallback } from './ui/avatar';
-import { ArrowBigLeft, ArrowDownLeftFromSquare, ArrowLeft, ArrowLeftFromLineIcon, LogOut, MoveLeft, User, User2Icon, Wallet2Icon, WalletIcon, WalletMinimalIcon } from 'lucide-react';
-import { PiWalletLight, PiWalletThin } from "react-icons/pi";
-  
-function WalletComponent() {
-    const { address, isConnected } = useAccount();
-
-    return (
-        <Card className={`${!isConnected ? 'bg-primary border-none rounded-md' : ''}`}>
-            <Wallet className={`p-0 text-sm ${!isConnected ? 'flex justify-center' : ''}`}>
-                <ConnectWallet className="flex p-2 items-center justify-center" text="Connect Wallet">
-                    <PiWalletLight className='self-center text-xl' />
-                    <Name />
-                </ConnectWallet>
-                <WalletDropdown>
-                    <div className='flex items-center justify-between py-1 pl-2 pr-1 rounded-sm gap-2 bg-secondary'>
-                        <LogOut />
-                        <WalletDropdownDisconnect className="p-0" />
-                    </div>
-                </WalletDropdown>
-            </Wallet>
-        </Card>
-    );
-}
-  
 export default function WalletButton() {
+
+    const { disconnect } = useDisconnect();
+    const { data: walletClient } = useWalletClient();
+    let web3Auth = useWeb3Auth();
+
+    const [user, setUser] = useState({
+        name: "shadcn",
+        email: "m@example.com",
+        avatar: "/avatars/shadcn.jpg",
+    });
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                var userInfo = await web3Auth?.getUserInfo();
+            } catch (e) {
+                console.log("Cannot get userInfo first time, likely web3Auth not fully updated");
+            }
+            console.log("/app, userInfo", userInfo);
+            if (userInfo) {
+                setUser({
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    avatar: userInfo.profileImage,
+                });
+            }
+        };
+        getUserInfo();
+    }, [walletClient]);
+
     return (
-        <div className="">
-            <WalletComponent />
-        </div>
-    );
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.avatar} alt="@shadcn" />
+                        <AvatarFallback>SC</AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.name}</p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                            {user.email}
+                        </p>
+                    </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                        Profile
+                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        Billing
+                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        Settings
+                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>New Team</DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={disconnect}>
+                    Log out
+                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
 }

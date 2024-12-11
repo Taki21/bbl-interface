@@ -2712,6 +2712,14 @@
     "@web3auth/ui" "^9.4.5"
     deepmerge "^4.3.1"
 
+"@web3auth/no-modal-react-hooks@^9.4.5":
+  version "9.4.5"
+  resolved "https://registry.yarnpkg.com/@web3auth/no-modal-react-hooks/-/no-modal-react-hooks-9.4.5.tgz#3070282fe37b75bd92845982428f5f7d021ad6ea"
+  integrity sha512-Lv8BNIUzSKAogTDf80vNMKFmzwEOAdsEeVaVVJtvIt8GNIygGuXxIZT3vchi3UW0AZnbtd0E12Z+lexO6ujz4A==
+  dependencies:
+    "@web3auth/base" "^9.4.5"
+    "@web3auth/no-modal" "^9.4.5"
+
 "@web3auth/no-modal@^9.4.5":
   version "9.4.5"
   resolved "https://registry.yarnpkg.com/@web3auth/no-modal/-/no-modal-9.4.5.tgz#17890edd2acd317ed76c2e472423755c02e9d8b0"

@@ -29,11 +29,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useDisconnect } from "wagmi"
 
 export function NavUser({
   user,
 }) {
   const { isMobile } = useSidebar()
+  const { disconnect } = useDisconnect()
 
   return (
     <SidebarMenu>
@@ -96,7 +98,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={disconnect}>
               <LogOut />
               Log out
             </DropdownMenuItem>

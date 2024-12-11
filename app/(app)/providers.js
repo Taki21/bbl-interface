@@ -2,23 +2,27 @@
 
 import { WagmiProvider, createConfig, http, useAccount, useConnect, useDisconnect } from "wagmi";
 import { coinbaseWallet, walletConnect } from "wagmi/connectors";
-import { sepolia, mainnet, polygon } from "wagmi/chains";
+import { sepolia, mainnet, polygon, base } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query' 
 
-import Web3AuthConnectorInstance from "./Web3AuthConnectorInstance";
+import { Web3AuthInstance, Web3AuthConnectorInstance } from "./Web3AuthConnectorInstance";
+import { Web3AuthProvider } from "@/context/Web3AuthContext";
 
-const queryClient = new QueryClient() 
+const queryClient = new QueryClient()
+
+const chainsAllowed = [base];
+
+const web3AuthInstance = Web3AuthInstance(chainsAllowed);
 
 // Set up client
 const config = createConfig({
   chains: [mainnet, sepolia, polygon],
   transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-    [polygon.id]: http(),
+    [base.id]: http(),
   },
   connectors: [
-    Web3AuthConnectorInstance([mainnet, sepolia, polygon]),
+    Web3AuthConnectorInstance(web3AuthInstance, "google"),
+    Web3AuthConnectorInstance(web3AuthInstance, "apple"),
   ],
 });
 
@@ -26,10 +30,12 @@ export function Providers(props) {
   //const { locale } = useRouter();
 
   return (
-    <WagmiProvider config={config} initialState={props.initialState}>
-      <QueryClientProvider client={queryClient}>
-          {props.children}
-      </QueryClientProvider>
-    </WagmiProvider>
+    <Web3AuthProvider web3AuthInstance={web3AuthInstance}>
+      <WagmiProvider config={config} initialState={props.initialState}>
+        <QueryClientProvider client={queryClient}>
+            {props.children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </Web3AuthProvider>
   );
 }
